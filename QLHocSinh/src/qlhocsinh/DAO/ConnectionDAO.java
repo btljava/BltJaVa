@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sun.applet.Main;
 
 /**
  *
@@ -22,7 +23,7 @@ public class ConnectionDAO {
     {
         String url="jdbc:mysql://localhost:3306/qlhs?useSSL=false";
         String username="root";
-        String password="duongmicki6855";
+        String password="123";
         Connection con= null;
         
         try {
@@ -48,24 +49,24 @@ public class ConnectionDAO {
             Logger.getLogger(ConnectionDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         finally{
-            if(resultSet!=null)
-            {
-
-                try {
-                   resultSet.close();
-                    
-                } catch (SQLException ex) {
-                    Logger.getLogger(ConnectionDAO.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(statement !=null)
-            {
-                try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ConnectionDAO.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+//            if(resultSet!=null)
+//            {
+//
+//                try {
+//                   resultSet.close();
+//                    
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(ConnectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            if(statement !=null)
+//            {
+//                try {
+//                    statement.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(ConnectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
             if(getConnection() !=null)
             {
                 try {
@@ -106,4 +107,5 @@ public class ConnectionDAO {
         }
         return 0;
     }
+    
 }

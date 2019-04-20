@@ -18,8 +18,17 @@ public class HocSinhDTO {
     String ngaysinh;
     int sodienthoai;
     String tenhs;
+    String tenlop;
 
-    public HocSinhDTO(String malop, String mahs, String quequan, String gioitinh, String ngaysinh, int sodienthoai, String tenhs) {
+    public String getTenlop() {
+        return tenlop;
+    }
+
+    public void setTenlop(String tenlop) {
+        this.tenlop = tenlop;
+    }
+
+    public HocSinhDTO(String malop, String mahs, String quequan, String gioitinh, String ngaysinh, int sodienthoai, String tenhs, String tenlop) {
         this.malop = malop;
         this.mahs = mahs;
         this.quequan = quequan;
@@ -27,10 +36,20 @@ public class HocSinhDTO {
         this.ngaysinh = ngaysinh;
         this.sodienthoai = sodienthoai;
         this.tenhs = tenhs;
+        this.tenlop = tenlop;
     }
+
+  
 
     public HocSinhDTO() {
     }
+
+    @Override
+    public String toString() {
+        return "HocSinhDTO{" + "malop=" + malop + ", mahs=" + mahs + ", quequan=" + quequan + ", gioitinh=" + gioitinh + ", ngaysinh=" + ngaysinh + ", sodienthoai=" + sodienthoai + ", tenhs=" + tenhs + ", tenlop=" + tenlop + '}';
+    }
+
+
 
     public String getMalop() {
         return malop;
