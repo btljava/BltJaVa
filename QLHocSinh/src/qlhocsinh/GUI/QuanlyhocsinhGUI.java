@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+package qlhocsinh.GUI;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import javax.swing.DefaultComboBoxModel;
 
 import javax.swing.JOptionPane;
@@ -23,17 +19,19 @@ import qlhocsinh.GUI.DangnhapGUI;
 public class QuanlyhocsinhGUI extends javax.swing.JFrame {
 
     private Object[] colName = new Object[]{"Tên Học Sinh", "Mã Học Sinh", "Giới tính", "Ngày Sinh", "Quê Quán", "Số Điện Thoại", "Lớp"};
+    HocSinhDAO hocsinh = new HocSinhDAO();
 
     /**
      * Creates new form Manage
      */
     public QuanlyhocsinhGUI() {
         initComponents();
-        uploaddata();
+        List<HocSinhDTO> list = hocsinh.getAll();
+        uploaddata(list);
         combobox();
     }
-    
-    public void combobox(){
+
+    public void combobox() {
 //        String[] s = {"A","B","C","D","E"}; 
 //        cbxtenlop.setModel(new DefaultComboBoxModel(s));
         List<LopDTO> listlop = new ArrayList<LopDTO>();
@@ -44,15 +42,8 @@ public class QuanlyhocsinhGUI extends javax.swing.JFrame {
         }
     }
 
-    private void uploaddata() {
-        List<HocSinhDTO> list = new ArrayList<HocSinhDTO>();
-        List<LopDTO> listlop = new ArrayList<LopDTO>();
-        HocSinhDAO hocsinh = new HocSinhDAO();
+    private void uploaddata(List<HocSinhDTO> list) {
         LopDAO lop = new LopDAO();
-//        ShowthongtinhocsinhBLO show = new ShowthongtinhocsinhBLO();
-        list = hocsinh.getAll();
-
-//        listlop = lop.getAll();
 
         Object[][] data = new Object[list.size()][7];
         int i = 0;
@@ -63,12 +54,7 @@ public class QuanlyhocsinhGUI extends javax.swing.JFrame {
             data[i][3] = hs.getNgaysinh();
             data[i][4] = hs.getQuequan();
             data[i][5] = hs.getSodienthoai();
-//            for (LopDTO l : listlop) {
-//                if (hs.getMalop() == l.getMalop()) {
-//                    data[i][6] = l.getTenlop();
-//                }
-//
-//            }
+
             data[i][6] = hs.getTenlop();
             i++;
         }
@@ -409,7 +395,7 @@ public class QuanlyhocsinhGUI extends javax.swing.JFrame {
 
     private void cbxtenlopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxtenlopActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_cbxtenlopActionPerformed
 
     private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
@@ -423,7 +409,27 @@ public class QuanlyhocsinhGUI extends javax.swing.JFrame {
         cbxnamsinh.setEnabled(false);
         rbtnNu.setEnabled(false);
         rbtnNam.setEnabled(false);
-        
+
+        HocSinhDTO HS = new HocSinhDTO();
+        List<HocSinhDTO> dshs = new ArrayList<HocSinhDTO>();
+
+        if (rbtnma.isSelected()) {
+            HS = hocsinh.getByMa(txtmahs.getText());
+            this.uploaddata(hocsinh.TimKiem(txtmahs.getText()));
+        } else if (rbtnlop.isSelected()) {
+            List<LopDTO> dsLop = new ArrayList<LopDTO>();
+            LopDAO lop = new LopDAO();
+            dsLop = lop.getAll();
+            for (LopDTO l : dsLop) {
+                if (cbxtenlop.getSelectedItem().toString().equals(l.getTenlop())) {
+                    HS.setMalop(l.getMalop());
+                }
+
+            }
+            dshs = hocsinh.getByMaLop(HS.getMalop());
+            this.uploaddata(dshs);
+        }
+
     }//GEN-LAST:event_btnTimActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
@@ -438,7 +444,46 @@ public class QuanlyhocsinhGUI extends javax.swing.JFrame {
         cbxnamsinh.setEnabled(false);
         rbtnNu.setEnabled(false);
         rbtnNam.setEnabled(false);
+        
+        QuanLyHocSinhBLO qlhs = new QuanLyHocSinhBLO();
+        HocSinhDTO hocsinh = new HocSinhDTO();
+        HocSinhDAO hs = new HocSinhDAO();
+        String mahs = txtmahs.getText();
+        hocsinh.setMahs(mahs);
+        String gioitinh = "Nam";
+        if (rbtnNu.isSelected()) {
+            gioitinh = "Nữ";
+        }
+        hocsinh.setGioitinh(gioitinh);
 
+        List<LopDTO> list = new ArrayList<LopDTO>();
+        LopDAO lop = new LopDAO();
+        list = lop.getAll();
+        for (LopDTO l : list) {
+            if (cbxtenlop.getSelectedItem().toString().equals(l.getTenlop())) {
+                hocsinh.setMalop(l.getMalop());
+            }
+
+        };
+
+        String ngaysinh = cbxNgaysinh.getSelectedItem().toString() + "-" + cbxthangsinh.getSelectedItem().toString() + "-" + cbxnamsinh.getSelectedItem().toString();
+        hocsinh.setNgaysinh(ngaysinh);
+        String quequan = txtquequan.getText();
+        hocsinh.setQuequan(quequan);
+        int sodienthoai = Integer.parseInt(txtsodienthoai.getText());
+        hocsinh.setSodienthoai(sodienthoai);
+        String tenhs = txttenhocsinh.getText();
+        hocsinh.setTenhs(tenhs);
+
+        System.out.println(hocsinh);
+        boolean x = hs.update(hocsinh);
+        if (!x) {
+            List<HocSinhDTO> list1 = new HocSinhDAO().getAll();
+            uploaddata(list1);
+            JOptionPane.showMessageDialog(null, "Sửa Học Sinh Thành Công");
+        } else {
+            JOptionPane.showMessageDialog(null, "Sửa thất bại");
+        }
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
@@ -453,32 +498,53 @@ public class QuanlyhocsinhGUI extends javax.swing.JFrame {
         cbxnamsinh.setEnabled(false);
         rbtnNu.setEnabled(false);
         rbtnNam.setEnabled(false);
-        
-        
+
         QuanLyHocSinhBLO qlhs = new QuanLyHocSinhBLO();
-        HocSinhDTO hocsinh = new  HocSinhDTO();
-        HocSinhDAO hs =  new HocSinhDAO();         
-        String gioitinh="Nam";        
-        if(rbtnNu.isSelected()){
-            gioitinh="Nữ";
-        }  
-        String malop = cbxtenlop.getSelectedItem().toString();
-        LopDAO lop= new LopDAO();
-        
-        String ngaysinh=cbxNgaysinh.getSelectedItem().toString()+"-"+cbxthangsinh.getSelectedItem().toString()+"-"+cbxnamsinh.getSelectedItem().toString();
-        
+        HocSinhDTO hocsinh = new HocSinhDTO();
+        HocSinhDAO hs = new HocSinhDAO();
+        String mahs = txtmahs.getText();
+        hocsinh.setMahs(mahs);
+        String gioitinh = "Nam";
+        if (rbtnNu.isSelected()) {
+            gioitinh = "Nữ";
+        }
+        hocsinh.setGioitinh(gioitinh);
+
+        List<LopDTO> list = new ArrayList<LopDTO>();
+        LopDAO lop = new LopDAO();
+        list = lop.getAll();
+        for (LopDTO l : list) {
+            if (cbxtenlop.getSelectedItem().toString().equals(l.getTenlop())) {
+                hocsinh.setMalop(l.getMalop());
+            }
+
+        };
+
+        String ngaysinh = cbxNgaysinh.getSelectedItem().toString() + "-" + cbxthangsinh.getSelectedItem().toString() + "-" + cbxnamsinh.getSelectedItem().toString();
+        hocsinh.setNgaysinh(ngaysinh);
         String quequan = txtquequan.getText();
-        Integer.parseInt(txtsodienthoai.getText());
+        hocsinh.setQuequan(quequan);
+        int sodienthoai = Integer.parseInt(txtsodienthoai.getText());
+        hocsinh.setSodienthoai(sodienthoai);
         String tenhs = txttenhocsinh.getText();
-        qlhs.insert(gioitinh, malop, ngaysinh, quequan, WIDTH, tenhs);
-        System.out.println(hocsinh);       
-        hs.LoadData(tablethongtinhocsinh);
-        
+        hocsinh.setTenhs(tenhs);
+
+        System.out.println(hocsinh);
+        int x = hs.insert(hocsinh);
+        if (x > 0) {
+            List<HocSinhDTO> list1 = new HocSinhDAO().getAll();
+            uploaddata(list1);
+            JOptionPane.showMessageDialog(null, "Thêm Học Sinh Thành Công");
+        } else {
+            JOptionPane.showMessageDialog(null, "Thêm thất bại");
+        }
+
+
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapActionPerformed
         // TODO add your handling code here:
-        txtmahs.setEnabled(false);
+
         txttenhocsinh.setEnabled(true);
         txtquequan.setEnabled(true);
         txtsodienthoai.setEnabled(true);
@@ -507,34 +573,47 @@ public class QuanlyhocsinhGUI extends javax.swing.JFrame {
         cbxnamsinh.setEnabled(false);
         rbtnNu.setEnabled(false);
         rbtnNam.setEnabled(false);
+         String mahs = txtmahs.getText();
+        boolean check =  hocsinh.delete(mahs);
+        if(!check){
+            List<HocSinhDTO> list1 = new HocSinhDAO().getAll();
+            uploaddata(list1);
+            JOptionPane.showMessageDialog(this, "Xóa thành công.");
+            
+        }else{
+            List<HocSinhDTO> list1 = new HocSinhDAO().getAll();
+            uploaddata(list1);
+            JOptionPane.showMessageDialog(this, "Xóa không thành công.");
+        }
+        
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void rbtnmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnmaActionPerformed
         // TODO add your handling code here:
-            txtmahs.setEnabled(true);
-            txttenhocsinh.setEnabled(false);
-            txtquequan.setEnabled(false);
-            txtsodienthoai.setEnabled(false);
-            cbxNgaysinh.setEnabled(false);
-            cbxtenlop.setEnabled(false);
-            cbxthangsinh.setEnabled(false);
-            cbxnamsinh.setEnabled(false);
-            rbtnNu.setEnabled(false);
-            rbtnNam.setEnabled(false);
+        txtmahs.setEnabled(true);
+        txttenhocsinh.setEnabled(false);
+        txtquequan.setEnabled(false);
+        txtsodienthoai.setEnabled(false);
+        cbxNgaysinh.setEnabled(false);
+        cbxtenlop.setEnabled(false);
+        cbxthangsinh.setEnabled(false);
+        cbxnamsinh.setEnabled(false);
+        rbtnNu.setEnabled(false);
+        rbtnNam.setEnabled(false);
     }//GEN-LAST:event_rbtnmaActionPerformed
 
     private void rbtnlopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnlopActionPerformed
         // TODO add your handling code here:
-            txtmahs.setEnabled(false);
-            txttenhocsinh.setEnabled(false);
-            txtquequan.setEnabled(false);
-            txtsodienthoai.setEnabled(false);
-            cbxNgaysinh.setEnabled(false);
-            cbxtenlop.setEnabled(true);
-            cbxthangsinh.setEnabled(false);
-            cbxnamsinh.setEnabled(false);
-            rbtnNu.setEnabled(false);
-            rbtnNam.setEnabled(false);
+        txtmahs.setEnabled(false);
+        txttenhocsinh.setEnabled(false);
+        txtquequan.setEnabled(false);
+        txtsodienthoai.setEnabled(false);
+        cbxNgaysinh.setEnabled(false);
+        cbxtenlop.setEnabled(true);
+        cbxthangsinh.setEnabled(false);
+        cbxnamsinh.setEnabled(false);
+        rbtnNu.setEnabled(false);
+        rbtnNam.setEnabled(false);
     }//GEN-LAST:event_rbtnlopActionPerformed
 
     private void menudangxuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menudangxuatMouseClicked

@@ -19,7 +19,7 @@ import qlhocsinh.DTO.HocSinhDTO;
  *
  * @author DuoNg_Xt_685
  */
-public class HocSinhDAO implements BasicDAO<HocSinhDTO>{
+public class HocSinhDAO implements BasicDAO<HocSinhDTO> {
 
     @Override
     public List<HocSinhDTO> getAll() {
@@ -32,7 +32,6 @@ public class HocSinhDAO implements BasicDAO<HocSinhDTO>{
         } else {
             list = new ArrayList<HocSinhDTO>();
 
-            
             try {
                 while (resultSet.next()) {
                     HocSinhDTO hs = new HocSinhDTO();
@@ -49,7 +48,6 @@ public class HocSinhDAO implements BasicDAO<HocSinhDTO>{
             } catch (SQLException ex) {
                 Logger.getLogger(HocSinhDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
 
         }
         return list;
@@ -57,19 +55,15 @@ public class HocSinhDAO implements BasicDAO<HocSinhDTO>{
 
     @Override
     public HocSinhDTO getByMa(String mahs) {
-        String sql="select*from tblhocsinh where tblhocsinh.mahs = '"+mahs+"'";
+        String sql = "select*from tblhocsinh where tblhocsinh.mahs = '" + mahs + "'";
         HocSinhDTO hs = new HocSinhDTO();
         ResultSet resultSet = ConnectionDAO.executeQuery(sql);
-        if(resultSet==null)
-        {
+        if (resultSet == null) {
             System.out.println("Lỗi, getByMa_MaHS");
-        }
-        else
-        {
+        } else {
 
             try {
-                while(resultSet.next())
-                {
+                while (resultSet.next()) {
                     hs.setGioitinh(resultSet.getString("gioitinh"));
                     hs.setMahs(resultSet.getString("mahs"));
                     hs.setMalop(resultSet.getString("malop"));
@@ -77,7 +71,7 @@ public class HocSinhDAO implements BasicDAO<HocSinhDTO>{
                     hs.setQuequan(resultSet.getString("quequan"));
                     hs.setSodienthoai(resultSet.getInt("sodienthoai"));
                     hs.setTenhs(resultSet.getString("tenhs"));
-                    
+
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(HocSinhDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,43 +80,17 @@ public class HocSinhDAO implements BasicDAO<HocSinhDTO>{
         }
         return hs;
     }
-    public static void LoadData(JTable tb){        
-        HocSinhDTO hs = new HocSinhDTO();
-        try {
-            
-            Statement statement = null;            
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM tblHOCSINH");
-
-            if (resultSet != null) {
-                hs.setGioitinh(resultSet.getNString("gioitinh"));
-                hs.setMahs(resultSet.getNString("mahs"));
-                hs.setMalop(resultSet.getNString("malop"));
-                hs.setNgaysinh(resultSet.getString("ngaysinh"));
-                hs.setQuequan(resultSet.getString("quequan"));
-                hs.setSodienthoai(resultSet.getInt("sodienthoai"));
-                hs.setTenhs(resultSet.getString("tenhs"));
-            }
-
-        } catch (SQLException ex) {
-            System.out.println("Hoc Sinh Khong Ton Tai");
-        }
-        
-    }
-    public List<HocSinhDTO> getByMaLop(String malop) {
-        String sql="select*from tblhocsinh where tblhocsinh.malop = '"+malop+"'";
-        HocSinhDTO hs = new HocSinhDTO();
+    public List<HocSinhDTO> TimKiem(String mahs) {
+        String sql = "select*from tblhocsinh where tblhocsinh.mahs = '" + mahs + "'";
         List<HocSinhDTO> list = new ArrayList<HocSinhDTO>();
         ResultSet resultSet = ConnectionDAO.executeQuery(sql);
-        if(resultSet==null)
-        {
-            System.out.println("Lỗi, getByMa_MaLop");
-        }
-        else
-        {
+        if (resultSet == null) {
+            System.out.println("Lỗi, getByMa_Mahs");
+        } else {
 
             try {
-                while(resultSet.next())
-                {
+                while (resultSet.next()) {
+                    HocSinhDTO hs = new HocSinhDTO();
                     hs.setGioitinh(resultSet.getString("gioitinh"));
                     hs.setMahs(resultSet.getString("mahs"));
                     hs.setMalop(resultSet.getString("malop"));
@@ -131,7 +99,67 @@ public class HocSinhDAO implements BasicDAO<HocSinhDTO>{
                     hs.setSodienthoai(resultSet.getInt("sodienthoai"));
                     hs.setTenhs(resultSet.getString("tenhs"));
                     list.add(hs);
-                    
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(HocSinhDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return list;
+    }
+    
+
+    public List<HocSinhDTO> getByMaLop(String malop) {
+        String sql = "select*from tblhocsinh where tblhocsinh.malop = '" + malop + "'";
+        
+        List<HocSinhDTO> list = new ArrayList<HocSinhDTO>();
+        ResultSet resultSet = ConnectionDAO.executeQuery(sql);
+        if (resultSet == null) {
+            System.out.println("Lỗi, getByMa_MaLop");
+        } else {
+
+            try {
+                while (resultSet.next()) {
+                    HocSinhDTO hs = new HocSinhDTO();
+                    hs.setGioitinh(resultSet.getString("gioitinh"));
+                    hs.setMahs(resultSet.getString("mahs"));
+                    hs.setMalop(resultSet.getString("malop"));
+                    hs.setNgaysinh(resultSet.getString("ngaysinh"));
+                    hs.setQuequan(resultSet.getString("quequan"));
+                    hs.setSodienthoai(resultSet.getInt("sodienthoai"));
+                    hs.setTenhs(resultSet.getString("tenhs"));
+                    list.add(hs);
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(HocSinhDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return list;
+    }
+     public List<HocSinhDTO> timbyMaLOP(String malop) {
+        String sql = "select*from tblhocsinh where tblhocsinh.malop = '" + malop + "'";
+        
+        List<HocSinhDTO> list = new ArrayList<HocSinhDTO>();
+        ResultSet resultSet = ConnectionDAO.executeQuery(sql);
+        if (resultSet == null) {
+            System.out.println("Lỗi, getByMa_MaLop");
+        } else {
+
+            try {
+                while (resultSet.next()) {
+                    HocSinhDTO hs = new HocSinhDTO();
+                    hs.setGioitinh(resultSet.getString("gioitinh"));
+                    hs.setMahs(resultSet.getString("mahs"));
+                    hs.setMalop(resultSet.getString("malop"));
+                    hs.setNgaysinh(resultSet.getString("ngaysinh"));
+                    hs.setQuequan(resultSet.getString("quequan"));
+                    hs.setSodienthoai(resultSet.getInt("sodienthoai"));
+                    hs.setTenhs(resultSet.getString("tenhs"));
+                    list.add(hs);
+
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(HocSinhDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -144,30 +172,30 @@ public class HocSinhDAO implements BasicDAO<HocSinhDTO>{
     @Override
     public int insert(HocSinhDTO t) {
         int rs = 0;
-        String sql="insert into tblhocsinh(gioitinh,mahs,malop,ngaysinh,quequan,sodienthoai,tenhs) values(N'"+t.getGioitinh()+"','"+t.getMahs()+"',"
-                + "'"+t.getMalop()+"','"+t.getNgaysinh()+"',N'"+t.getQuequan()+"',"+t.getSodienthoai()+",N'"+t.getTenhs()+"')";
-        
-        rs =ConnectionDAO.executeNonQuery(sql);
+        String sql = "insert into tblhocsinh(gioitinh,mahs,malop,ngaysinh,quequan,sodienthoai,tenhs) values(N'" + t.getGioitinh() + "','" + t.getMahs() + "',"
+                + "'" + t.getMalop() + "','" + t.getNgaysinh() + "',N'" + t.getQuequan() + "'," + t.getSodienthoai() + ",N'" + t.getTenhs() + "')";
+
+        rs = ConnectionDAO.executeNonQuery(sql);
         return rs;
     }
 
     @Override
     public boolean update(HocSinhDTO t) {
         int rs = 0;
-        String sql="update tblhocsinh set giotinh=N'"+t.getGioitinh()+"',malop='"+t.getMalop()+"',ngaysinh='"+t.getNgaysinh()+"',"
-                + "quequan=N'"+t.getQuequan()+"',sodienthoai="+t.getSodienthoai()+",tenhs=N'"+t.getTenhs()+"' where tblhocsinh.mahs='"+t.getMahs()+"')";
-        
-        rs =ConnectionDAO.executeNonQuery(sql);
-        return rs==0;
+        String sql = "update tblhocsinh set gioitinh=N'" + t.getGioitinh() + "',malop='" + t.getMalop() + "',ngaysinh='" + t.getNgaysinh() + "',"
+                + "quequan=N'" + t.getQuequan() + "',sodienthoai=" + t.getSodienthoai() + ",tenhs=N'" + t.getTenhs() + "' where tblhocsinh.mahs='" + t.getMahs() + "'";
+
+        rs = ConnectionDAO.executeNonQuery(sql);
+        return rs == 0;
     }
 
     @Override
     public boolean delete(String ma) {
         int rs = 0;
-        String sql="delete from tblhocsinh where tblhocsinh.mahs='"+ma+"'";
-        
-        rs =ConnectionDAO.executeNonQuery(sql);
-        return rs==0;
+        String sql = "delete from tblhocsinh where tblhocsinh.mahs='" + ma + "'";
+
+        rs = ConnectionDAO.executeNonQuery(sql);
+        return rs == 0;
     }
-    
+
 }
